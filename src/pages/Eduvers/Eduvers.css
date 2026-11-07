@@ -1,0 +1,218 @@
+/* Eduvers Standalone Section Styles */
+.eduvers-page {
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Standalone Header */
+.eduvers-header {
+  height: 68px;
+  background: var(--bg-card);
+  border-bottom: var(--border-width) solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-sm);
+}
+
+.eduvers-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.eduvers-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.eduvers-lang-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-hover);
+  border: var(--border-width) solid var(--border);
+  border-radius: 999px;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* Hero Section */
+.eduvers-hero {
+  text-align: center;
+  padding: 60px 20px 40px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+.eduvers-hero-badge {
+  display: inline-block;
+  margin-bottom: 16px;
+}
+.eduvers-hero h1 {
+  font-size: 2.6rem;
+  font-weight: 900;
+  line-height: 1.2;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, var(--accent), #ef4444);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.eduvers-hero p {
+  font-size: 1.15rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* Age Group Big Cards */
+.age-cards-container {
+  max-width: 960px;
+  margin: 20px auto 60px;
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 28px;
+}
+
+.age-card {
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: var(--border-radius-lg);
+  padding: 36px 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--shadow);
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+.age-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--accent);
+  box-shadow: var(--shadow-lg);
+}
+.age-card.active-group {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-light);
+}
+
+.age-card-badge {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  background: var(--accent-light);
+  color: var(--accent);
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.age-card-icon {
+  font-size: 3.5rem;
+  margin-bottom: 16px;
+}
+.age-card-number {
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+.age-card-subtitle {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+
+.age-card-features {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+.age-card-feature-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+.age-card-feature-item span.check {
+  color: var(--success);
+  font-weight: 800;
+}
+
+/* Features Grid */
+.eduvers-features-section {
+  background: var(--bg-secondary);
+  border-top: var(--border-width) solid var(--border);
+  border-bottom: var(--border-width) solid var(--border);
+  padding: 60px 20px;
+}
+.eduvers-features-wrap {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.eduvers-features-title {
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin-bottom: 36px;
+}
+.eduvers-features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+.eduvers-feature-box {
+  background: var(--bg-card);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--border-radius);
+  padding: 24px 20px;
+  text-align: center;
+}
+.eduvers-feature-box-icon {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+}
+.eduvers-feature-box-title {
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 6px;
+}
+.eduvers-feature-box-text {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* Eduvers Footer */
+.eduvers-footer {
+  padding: 30px 20px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+@media (max-width: 600px) {
+  .eduvers-header { padding: 0 16px; }
+  .eduvers-hero h1 { font-size: 2rem; }
+  .age-card { padding: 24px 20px; }
+}
+

@@ -1,0 +1,207 @@
+/* Hackathon page styles */
+.hackathon-hero {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #db2777 100%);
+  color: #fff;
+  border-radius: var(--border-radius-lg);
+  padding: 32px 28px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.hackathon-hero::after {
+  content: '🚀';
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 5rem;
+  opacity: 0.18;
+  pointer-events: none;
+}
+.hackathon-hero h2 {
+  color: #fff;
+  font-size: 1.8rem;
+  margin-bottom: 8px;
+}
+.hackathon-hero p {
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 600px;
+  font-size: 0.95rem;
+}
+.hackathon-countdown {
+  display: flex;
+  gap: 16px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+.countdown-box {
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(8px);
+  padding: 10px 16px;
+  border-radius: var(--border-radius-sm);
+  text-align: center;
+  min-width: 68px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+.countdown-num {
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: #fff;
+}
+.countdown-lbl {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.8);
+  letter-spacing: 0.5px;
+}
+
+/* Steps section "Что нужно сделать" */
+.steps-section {
+  margin-top: 16px;
+}
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+  margin-top: 14px;
+}
+.step-card {
+  background: var(--bg-card);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--border-radius);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  position: relative;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.step-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+.step-card.done {
+  border-left: 4px solid var(--success);
+}
+.step-card.in-progress {
+  border-left: 4px solid var(--accent);
+}
+.step-card.locked {
+  border-left: 4px solid var(--border);
+  opacity: 0.85;
+}
+.step-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.step-icon-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--bg-hover);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+.step-num {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.step-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-top: 2px;
+}
+.step-desc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+.step-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+/* Topics grid */
+.topics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+.topic-card {
+  background: var(--bg-card);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--border-radius);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+/* Team members */
+.team-member-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.team-member-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--bg-card);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--border-radius-sm);
+}
+
+/* Gallery grid */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
+}
+.gallery-card {
+  background: var(--bg-card);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.gallery-preview {
+  height: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.8rem;
+  color: #fff;
+}
+.gallery-body {
+  padding: 16px;
+}
+
+/* Submission Form */
+.submit-form {
+  background: var(--bg-card);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--border-radius);
+  padding: 24px;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+

@@ -1,0 +1,45 @@
+/* My Courses page */
+.courses-current-card {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.courses-current-cover {
+  width: 100px; height: 100px;
+  border-radius: var(--border-radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  flex-shrink: 0;
+}
+.courses-current-info { flex: 1; min-width: 180px; }
+.courses-current-title { font-size: 1.1rem; font-weight: 800; margin-bottom: 6px; }
+.courses-current-meta { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 10px; }
+
+/* Free courses grid */
+.free-courses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+.course-card { transition: all var(--transition); }
+.course-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+.course-cover {
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  position: relative;
+}
+.course-category-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+.course-info { padding: 14px; }
+.course-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 6px; }
+.course-meta  { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 12px; }
+

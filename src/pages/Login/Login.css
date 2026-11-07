@@ -1,0 +1,400 @@
+/* ============================================================
+   MARS IT — Login & Registration Page Styles
+   Style: Mars space theme with constellation canvas & glassmorphism
+   ============================================================ */
+
+/* Butun sahifa konteyneri (Dark navy background) */
+.login-root {
+  min-height: 100vh;
+  width: 100%;
+  background: #070a1f;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow-x: hidden;
+  padding: 40px 16px;
+  box-sizing: border-box;
+  font-family: var(--font-main, 'Inter', -apple-system, BlinkMacSystemFont, sans-serif);
+}
+
+/* Orqa fondagi yulduzlar (constellation) canvas */
+.login-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: auto;
+  z-index: 0;
+}
+
+/* Tepada piksel/dotted uslubidagi sarlavha (Press Start 2P) */
+.login-pixel-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 2.2rem;
+  color: #ffffff;
+  text-align: center;
+  letter-spacing: 3px;
+  margin: 0 0 28px 0;
+  position: relative;
+  z-index: 1;
+  text-shadow:
+    0 0 10px rgba(255, 255, 255, 0.45),
+    0 0 22px rgba(99, 102, 241, 0.35);
+  user-select: none;
+}
+
+/* Glassmorphism asosiy karta */
+.login-glass-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 420px;
+  background: rgba(22, 27, 46, 0.62);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 24px;
+  box-shadow:
+    0 24px 50px -10px rgba(0, 0, 0, 0.65),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  padding: 36px 32px;
+  box-sizing: border-box;
+  color: #ffffff;
+}
+
+/* Yuqori chap burchakdagi Offerta matni */
+.login-offerta-link {
+  position: absolute;
+  top: 18px;
+  left: 22px;
+  background: transparent;
+  border: none;
+  font-size: 0.76rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.2s ease;
+  user-select: none;
+}
+
+.login-offerta-link:hover {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Karta sarlavhalari */
+.login-card-header {
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 22px;
+}
+
+.login-heading {
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+  margin: 0 0 6px 0;
+  text-transform: uppercase;
+}
+
+.login-subheading {
+  font-size: 0.88rem;
+  color: #94a3b8;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* Tablar kapsulasi */
+.login-tabs-container {
+  display: flex;
+  background: rgba(0, 0, 0, 0.32);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 9999px;
+  padding: 4px;
+  margin-bottom: 22px;
+  gap: 4px;
+}
+
+.login-tab-pill {
+  flex: 1;
+  padding: 10px 14px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.65);
+  cursor: pointer;
+  transition: all 0.22s ease;
+  text-align: center;
+  user-select: none;
+}
+
+.login-tab-pill:hover:not(.active) {
+  color: #ffffff;
+}
+
+.login-tab-pill.active {
+  background: #ffffff;
+  color: #070a1f;
+  font-weight: 700;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+}
+
+/* Xatolik banneri */
+.login-error-alert {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.6);
+  border-radius: 12px;
+  color: #fca5a5;
+  font-size: 0.84rem;
+  font-weight: 500;
+  padding: 10px 14px;
+  text-align: center;
+  margin-bottom: 18px;
+  animation: tabFadeSlide 0.2s ease-out;
+}
+
+/* Form container va tab animatsiyasi */
+.login-form-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.login-tab-animated {
+  animation: tabFadeSlide 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes tabFadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Har bir kiritish maydoni guruhi */
+.login-input-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.login-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 6px;
+  user-select: none;
+}
+
+/* Oq orqa fonli input qobig'i */
+.login-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1.5px solid transparent;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  overflow: hidden;
+}
+
+.login-input-wrap:focus-within {
+  border-color: #e8603c;
+  box-shadow: 0 0 0 3px rgba(232, 96, 60, 0.25);
+}
+
+.login-left-icon {
+  position: absolute;
+  left: 14px;
+  color: #64748b;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+.login-input-element {
+  width: 100%;
+  height: 46px;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  color: #0f172a !important;
+  font-size: 0.92rem;
+  font-weight: 500;
+  padding: 0 42px 0 42px;
+  box-sizing: border-box;
+}
+
+.login-input-element::placeholder {
+  color: #94a3b8;
+  font-size: 0.86rem;
+}
+
+/* Parolni ko'rsatish/yashirish tugmasi */
+.login-eye-toggle {
+  position: absolute;
+  right: 10px;
+  background: transparent;
+  border: none;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.login-eye-toggle:hover {
+  color: #0f172a;
+}
+
+/* Asosiy harakat tugmasi (coral / orange) */
+.login-main-submit-btn {
+  width: 100%;
+  height: 48px;
+  margin-top: 8px;
+  background: #e8603c;
+  color: #ffffff;
+  border: none;
+  border-radius: 14px;
+  font-size: 0.96rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 6px 18px rgba(232, 96, 60, 0.35);
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease,
+    opacity 0.2s ease;
+  user-select: none;
+}
+
+.login-main-submit-btn:hover:not(:disabled) {
+  background: #f1704e;
+  box-shadow: 0 8px 24px rgba(232, 96, 60, 0.45);
+  transform: translateY(-1px);
+}
+
+.login-main-submit-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* To'liq to'ldirilmagan holatda yoki yuklanayotganda faded/disabled */
+.login-main-submit-btn:disabled,
+.login-main-submit-btn.disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+/* Yuklanmoqda... spinner va kontent */
+.login-btn-loading-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.login-mini-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: loginSpin 0.7s linear infinite;
+}
+
+@keyframes loginSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Karta tagidagi havola */
+.login-bottom-toggle {
+  margin-top: 20px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.login-bottom-toggle-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: color 0.2s ease;
+}
+
+.login-bottom-toggle-btn:hover {
+  color: #ffffff;
+}
+
+.login-highlight-link {
+  color: #ffffff;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  margin-left: 4px;
+}
+
+.login-highlight-link:hover {
+  color: #ff9b7a;
+}
+
+/* Mobil moslashuvchanlik */
+@media (max-width: 480px) {
+  .login-root {
+    padding: 24px 12px;
+  }
+
+  .login-pixel-title {
+    font-size: 1.55rem;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+  }
+
+  .login-glass-card {
+    padding: 26px 20px;
+    border-radius: 20px;
+    width: 92%;
+  }
+
+  .login-heading {
+    font-size: 1.18rem;
+  }
+
+  .login-subheading {
+    font-size: 0.82rem;
+  }
+
+  .login-input-element {
+    height: 44px;
+    font-size: 0.88rem;
+  }
+
+  .login-main-submit-btn {
+    height: 44px;
+    font-size: 0.92rem;
+  }
+}
