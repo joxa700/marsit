@@ -1,8 +1,9 @@
 // App entry & routing
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
-import AppLayout from './components/layout/AppLayout';
+import AppLayout, { ADMIN_NAV_ITEMS } from './components/layout/AppLayout';
 import AIAssistant from './components/AIAssistant/AIAssistant';
+import { AdminRoute, ProtectedRoute } from './components/ProtectedRoute';
 
 // Pages
 import LoginPage from './pages/Login/LoginPage';
@@ -14,21 +15,41 @@ import HackathonPage from './pages/Hackathon/HackathonPage';
 import EduversPage from './pages/Eduvers/EduversPage';
 import ProfilePage from './pages/Profile/ProfilePage';
 
-/**
- * ProtectedRoute guard: redirects unauthenticated users to /login
- */
-function ProtectedRoute({ children }) {
-  const { user } = useAuth();
-  const location = useLocation();
+// Admin pages
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminStudents from './pages/admin/AdminStudents';
+import AdminStudentDetail from './pages/admin/AdminStudentDetail';
+import AdminGroups from './pages/admin/AdminGroups';
+import AdminGroupDetail from './pages/admin/AdminGroupDetail';
+import AdminWorks from './pages/admin/AdminWorks';
+import AdminCourses from './pages/admin/AdminCourses';
+import './pages/admin/admin.css';
 
-  if (!user) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-  return children;
+function StudentShell({ children }) {
+  return (
+    <ProtectedRoute>
+      <AppLayout>
+        {children}
+      </AppLayout>
+      <AIAssistant />
+    </ProtectedRoute>
+  );
+}
+
+function AdminShell({ children }) {
+  return (
+    <AdminRoute>
+      <AppLayout navItems={ADMIN_NAV_ITEMS} homePath="/admin" adminMode>
+        {children}
+      </AppLayout>
+      <AIAssistant />
+    </AdminRoute>
+  );
 }
 
 export default function App() {
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
+  const homeForUser = isAdmin ? '/admin' : '/';
 
   return (
     <>
@@ -36,97 +57,29 @@ export default function App() {
         {/* Public Login */}
         <Route
           path="/login"
-          element={user ? <Navigate to="/" replace /> : <LoginPage />}
+          element={user ? <Navigate to={homeForUser} replace /> : <LoginPage />}
         />
 
-        {/* Standalone Eduvers Landing */}
-        <Route
-          path="/eduvers"
-          element={
-            <ProtectedRoute>
-              <>
-                <EduversPage />
-                <AIAssistant />
-              </>
-            </ProtectedRoute>
-          }
-        />
+        {/* Student pages inside common AppLayout */}
+        <Route path="/" element={<StudentShell><HomePage /></StudentShell>} />
+        <Route path="/courses" element={<StudentShell><MyCoursesPage /></StudentShell>} />
+        <Route path="/works" element={<StudentShell><MyWorksPage /></StudentShell>} />
+        <Route path="/battle" element={<StudentShell><BattlePage /></StudentShell>} />
+        <Route path="/hackathon" element={<StudentShell><HackathonPage /></StudentShell>} />
+        <Route path="/eduvers" element={<StudentShell><EduversPage /></StudentShell>} />
+        <Route path="/profile" element={<StudentShell><ProfilePage /></StudentShell>} />
 
-        {/* Protected pages inside AppLayout */}
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <AppLayout>
-                <HomePage />
-              </AppLayout>
-              <AIAssistant />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/courses"
-          element={
-            <ProtectedRoute>
-              <AppLayout>
-                <MyCoursesPage />
-              </AppLayout>
-              <AIAssistant />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/works"
-          element={
-            <ProtectedRoute>
-              <AppLayout>
-                <MyWorksPage />
-              </AppLayout>
-              <AIAssistant />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/battle"
-          element={
-            <ProtectedRoute>
-              <AppLayout>
-                <BattlePage />
-              </AppLayout>
-              <AIAssistant />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/hackathon"
-          element={
-            <ProtectedRoute>
-              <AppLayout>
-                <HackathonPage />
-              </AppLayout>
-              <AIAssistant />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute>
-              <AppLayout>
-                <ProfilePage />
-              </AppLayout>
-              <AIAssistant />
-            </ProtectedRoute>
-          }
-        />
+        {/* Admin panel */}
+        <Route path="/admin" element={<AdminShell><AdminDashboard /></AdminShell>} />
+        <Route path="/admin/students" element={<AdminShell><AdminStudents /></AdminShell>} />
+        <Route path="/admin/students/:studentId" element={<AdminShell><AdminStudentDetail /></AdminShell>} />
+        <Route path="/admin/groups" element={<AdminShell><AdminGroups /></AdminShell>} />
+        <Route path="/admin/groups/:groupId" element={<AdminShell><AdminGroupDetail /></AdminShell>} />
+        <Route path="/admin/works" element={<AdminShell><AdminWorks /></AdminShell>} />
+        <Route path="/admin/courses" element={<AdminShell><AdminCourses /></AdminShell>} />
 
         {/* Fallback */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<Navigate to={user ? homeForUser : '/login'} replace />} />
       </Routes>
     </>
   );

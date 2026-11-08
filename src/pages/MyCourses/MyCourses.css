@@ -43,3 +43,16 @@
 .course-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 6px; }
 .course-meta  { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 12px; }
 
+
+/* Empty state */
+.courses-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 44px 20px;
+}
+.courses-empty-icon { font-size: 3rem; margin-bottom: 10px; }
+.courses-empty-title { font-size: 1.05rem; margin-bottom: 6px; }
+.courses-empty-text { font-size: 0.85rem; color: var(--text-muted); max-width: 360px; line-height: 1.5; }

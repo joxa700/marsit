@@ -1,14 +1,11 @@
-// Eduvers standalone landing page with ru/uz language support
+// Eduverse content page — common AppLayout ichida ko'rsatiladi
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
-import { useTheme, THEMES } from '../../context/ThemeContext';
 import { Button, Badge } from '../../components/ui';
 import './Eduvers.css';
 
 export default function EduversPage() {
   const { lang, setLang, t } = useLanguage();
-  const { theme, setTheme } = useTheme();
   const [selectedGroup, setSelectedGroup] = useState('7-11');
 
   const content = {
@@ -82,67 +79,34 @@ export default function EduversPage() {
 
   return (
     <div className="eduvers-page animate-fade-in">
-      {/* Standalone Header */}
-      <header className="eduvers-header">
-        <Link to="/" className="eduvers-logo">
-          <svg width="34" height="34" viewBox="0 0 36 36" fill="none">
-            <circle cx="18" cy="18" r="18" fill="#6366f1" />
-            <circle cx="18" cy="18" r="10" fill="#ef4444" />
-            <circle cx="23" cy="13" r="4" fill="#f59e0b" />
-          </svg>
-          <span>Mars Eduvers</span>
-        </Link>
-
-        <div className="eduvers-nav-actions">
-          {/* Language Switcher ru / uz */}
-          <div className="eduvers-lang-toggle" role="group" aria-label="Тил танлаш">
-            <span
-              style={{
-                cursor: 'pointer',
-                opacity: lang === 'ru' ? 1 : 0.45,
-                fontWeight: lang === 'ru' ? 800 : 500,
-                color: lang === 'ru' ? 'var(--accent)' : 'inherit'
-              }}
-              onClick={() => setLang('ru')}
-            >
-              🇷🇺 RU
-            </span>
-            <span style={{ opacity: 0.3 }}>|</span>
-            <span
-              style={{
-                cursor: 'pointer',
-                opacity: lang === 'uz' ? 1 : 0.45,
-                fontWeight: lang === 'uz' ? 800 : 500,
-                color: lang === 'uz' ? 'var(--accent)' : 'inherit'
-              }}
-              onClick={() => setLang('uz')}
-            >
-              🇺🇿 UZ
-            </span>
-          </div>
-
-          {/* Theme switcher */}
-          <div className="theme-switcher" style={{ display: 'flex' }}>
-            {THEMES.map(t => (
-              <button
-                key={t.id}
-                className={['theme-btn', theme === t.id ? 'active' : ''].join(' ')}
-                onClick={() => setTheme(t.id)}
-                title={t.label}
-              >
-                {t.emoji}
-              </button>
-            ))}
-          </div>
-
-          {/* Link back to Main Platform */}
-          <Link to="/">
-            <Button variant="outline" size="sm">
-              {cur.platformBack}
-            </Button>
-          </Link>
+      {/* Til tanlash — umumiy header ichida, faqat kontentda */}
+      <div className="eduvers-lang-row">
+        <div className="eduvers-lang-toggle" role="group" aria-label="Тил танлаш">
+          <span
+            style={{
+              cursor: 'pointer',
+              opacity: lang === 'ru' ? 1 : 0.45,
+              fontWeight: lang === 'ru' ? 800 : 500,
+              color: lang === 'ru' ? 'var(--accent)' : 'inherit'
+            }}
+            onClick={() => setLang('ru')}
+          >
+            🇷🇺 RU
+          </span>
+          <span style={{ opacity: 0.3 }}>|</span>
+          <span
+            style={{
+              cursor: 'pointer',
+              opacity: lang === 'uz' ? 1 : 0.45,
+              fontWeight: lang === 'uz' ? 800 : 500,
+              color: lang === 'uz' ? 'var(--accent)' : 'inherit'
+            }}
+            onClick={() => setLang('uz')}
+          >
+            🇺🇿 UZ
+          </span>
         </div>
-      </header>
+      </div>
 
       {/* Hero */}
       <section className="eduvers-hero">

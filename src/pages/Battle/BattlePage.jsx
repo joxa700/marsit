@@ -101,7 +101,7 @@ export default function BattlePage() {
         <div className="battle-stat-card">
           <span className="battle-stat-icon">🏆</span>
           <div>
-            <div className="battle-stat-val">14</div>
+            <div className="battle-stat-val">{stats.wins}</div>
             <div className="battle-stat-lbl">Побед</div>
           </div>
         </div>

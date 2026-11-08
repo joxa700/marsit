@@ -1,6 +1,7 @@
-// AuthContext — handles login/registration/logout and user session state
+// AuthContext — login/logout and persisted user session state
 import { createContext, useContext, useState, useEffect } from 'react';
-import { loginUser, registerUser } from '../api/auth';
+import { loginUser, sanitizeAccount } from '../api/auth';
+import { isAdminAccount } from '../config/auth';
 
 const AuthContext = createContext(null);
 
@@ -9,7 +10,9 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     try {
       const stored = localStorage.getItem('marsit_user');
-      return stored ? JSON.parse(stored) : null;
+      if (!stored) return null;
+      const parsed = JSON.parse(stored);
+      return parsed ? sanitizeAccount(parsed) : null;
     } catch {
       return null;
     }
@@ -28,7 +31,8 @@ export function AuthProvider({ children }) {
   }, [user]);
 
   /**
-   * Login with email and password via mockapi.io
+   * Login with email and password via mockapi.io.
+   * Returns safe user data on success, null on failure.
    */
   async function login(email, password) {
     setLoading(true);
@@ -36,28 +40,10 @@ export function AuthProvider({ children }) {
     try {
       const safeUser = await loginUser({ email, password });
       setUser(safeUser);
-      return true;
+      return safeUser;
     } catch (err) {
       setError(err.message || 'Kirishda xatolik yuz berdi');
-      return false;
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  /**
-   * Register new user via mockapi.io and automatically log in
-   */
-  async function register({ email, password, name }) {
-    setLoading(true);
-    setError('');
-    try {
-      const safeUser = await registerUser({ email, password, name });
-      setUser(safeUser);
-      return true;
-    } catch (err) {
-      setError(err.message || "Ro'yxatdan o'tishda xatolik yuz berdi");
-      return false;
+      return null;
     } finally {
       setLoading(false);
     }
@@ -78,12 +64,14 @@ export function AuthProvider({ children }) {
     setUser(prev => (prev ? { ...prev, ...updates } : null));
   }
 
+  const isAdmin = isAdminAccount(user);
+
   return (
     <AuthContext.Provider
       value={{
         user,
+        isAdmin,
         login,
-        register,
         logout,
         updateUser,
         loading,

@@ -1,12 +1,12 @@
 // Home page — Asosiy
 import { Link } from 'react-router-dom';
-import { Card, CardBody, CardHeader, Button, ProgressBar, RingProgress, Badge } from '../../components/ui';
-import { currentCourse } from '../../data/courses';
-import { currentTasks } from '../../data/tasks';
+import { Card, CardBody, CardHeader, Badge, ProgressBar, RingProgress } from '../../components/ui';
+import { useAuth } from '../../context/AuthContext';
 import { useUserStats } from '../../context/UserStatsContext';
+import { getCourse, getStudentEnrollments } from '../../services/courses';
 import './Home.css';
 
-// 10 level stages (stage 6 = current)
+// 10 level stages
 const STAGES = [
   { id: 1, label: 'Start', emoji: '🌟' },
   { id: 2, label: 'HTML',  emoji: '📄' },
@@ -19,19 +19,22 @@ const STAGES = [
   { id: 9, label: 'Pro',   emoji: '👑' },
   { id: 10, label: 'Mars', emoji: '🚀' },
 ];
-const CURRENT_STAGE = 6; // 1-indexed
-
-const STATUS_LABEL = { pending: 'Kutilmoqda', done: 'Bajarildi', 'in-progress': 'Jarayonda' };
 
 export default function HomePage() {
-  const { addCoins, addLightning } = useUserStats();
+  const { user } = useAuth();
+  const { stats } = useUserStats();
 
-  function completeTask(task) {
-    if (task.status !== 'done') {
-      addCoins(task.coins);
-      addLightning(5);
-    }
-  }
+  const currentStage = Math.min(10, Math.max(1, Number(stats.level) || 1));
+  const levelProgress = Math.round(((currentStage - 1) / 10) * 100);
+
+  const enrollments = user ? getStudentEnrollments(user.id) : [];
+  const myCourses = enrollments
+    .map(enrollment => {
+      const course = getCourse(enrollment.courseId);
+      return course ? { ...course, progress: enrollment.progress || 0, enrollment } : null;
+    })
+    .filter(Boolean);
+  const activeCourse = myCourses[0] || null;
 
   return (
     <div>
@@ -39,29 +42,25 @@ export default function HomePage() {
 
       <div className="home-grid">
         {/* ===== LEFT (WIDE) COLUMN ===== */}
-        {/* Order: 1. Darajangiz, 2. Mars Code, 3. Kurslarim */}
         <div className="home-left">
-          {/* 1. Darajangiz Level Card (unchanged) */}
+          {/* 1. Darajangiz Level Card */}
           <Card>
             <CardHeader>
               <span className="card-title">Darajangiz</span>
-              <Badge variant="accent">6-daraja</Badge>
+              <Badge variant="accent">{currentStage}-daraja</Badge>
             </CardHeader>
             <CardBody>
               <div className="level-stages">
                 {STAGES.map((stage, i) => {
-                  const status = i + 1 < CURRENT_STAGE ? 'done'
-                               : i + 1 === CURRENT_STAGE ? 'current'
+                  const status = i + 1 < currentStage ? 'done'
+                               : i + 1 === currentStage ? 'current'
                                : 'locked';
                   return (
                     <div key={stage.id} style={{ display: 'flex', alignItems: 'center' }}>
                       {i > 0 && (
-                        <div className={['stage-connector', i + 1 <= CURRENT_STAGE ? 'done' : ''].join(' ')} />
+                        <div className={['stage-connector', i + 1 <= currentStage ? 'done' : ''].join(' ')} />
                       )}
-                      <div
-                        className={['stage-node', status].join(' ')}
-                        title={stage.label}
-                      >
+                      <div className={['stage-node', status].join(' ')} title={stage.label}>
                         <span style={{ fontSize: '1rem' }}>{stage.emoji}</span>
                         <span className="stage-label">{stage.label}</span>
                       </div>
@@ -71,8 +70,8 @@ export default function HomePage() {
               </div>
               <div style={{ marginTop: 28 }}>
                 <ProgressBar
-                  value={CURRENT_STAGE}
-                  max={10}
+                  value={levelProgress}
+                  max={100}
                   label="Daraja progressi"
                   color="#f04a12"
                 />
@@ -80,9 +79,8 @@ export default function HomePage() {
             </CardBody>
           </Card>
 
-          {/* 2. Mars Code Promo Banner (horizontal layout, under level card) */}
+          {/* 2. Mars Code Promo Banner */}
           <div className="promo-banner">
-            {/* Left: Code-snippet box */}
             <div className="promo-code-box">
               <div className="promo-code-header">
                 <span className="promo-code-dot dot-red" />
@@ -98,7 +96,6 @@ export default function HomePage() {
               </pre>
             </div>
 
-            {/* Right/center: Text description and button */}
             <div className="promo-content">
               <span className="promo-badge">YANGI</span>
               <h3 className="promo-title">Mars Code</h3>
@@ -106,98 +103,89 @@ export default function HomePage() {
               <button
                 type="button"
                 className="promo-btn"
-                onClick={() => alert("Mars Code dasturiga xush kelibsiz!")}
+                onClick={() => alert('Mars Code dasturiga xush kelibsiz!')}
               >
                 Sinab ko'rish →
               </button>
             </div>
           </div>
 
-          {/* 3. Kurslarim Course Card (horizontal layout, under Mars Code banner) */}
+          {/* 3. Kurslarim Course Card */}
           <Card>
             <CardHeader>
               <span className="card-title">Kurslarim</span>
-              <Badge variant="accent">{currentCourse.category}</Badge>
+              {activeCourse && <Badge variant="accent">{activeCourse.category}</Badge>}
             </CardHeader>
             <CardBody>
-              <div className="course-horizontal-card">
-                {/* Left: Circular progress ring */}
-                <div className="course-ring-wrap">
-                  <RingProgress value={currentCourse.progress} size={84} strokeWidth={8} color="#1e9bff">
-                    {currentCourse.progress}%
-                  </RingProgress>
-                </div>
-
-                {/* Middle: Course name and info */}
-                <div className="course-middle-info">
-                  <div className="course-title-text">{currentCourse.title}</div>
-                  <div className="course-sub-text">Keyingi mavzu: {currentCourse.nextLesson}</div>
-                  <div className="course-progress-bar-wrap">
-                    <ProgressBar value={currentCourse.progress} color="#1e9bff" showPercent={false} />
+              {activeCourse ? (
+                <div className="course-horizontal-card">
+                  <div className="course-ring-wrap">
+                    <RingProgress value={activeCourse.progress} size={84} strokeWidth={8} color="#1e9bff">
+                      {activeCourse.progress}%
+                    </RingProgress>
                   </div>
-                </div>
 
-                {/* Right: Stats and Davom etish link */}
-                <div className="course-right-actions">
-                  <div className="course-stats-horizontal">
-                    <div className="course-stat">
-                      <span className="course-stat-val">{currentCourse.lessonsDone}</span>
-                      <span className="course-stat-label">bajarildi</span>
+                  <div className="course-middle-info">
+                    <div className="course-title-text">{activeCourse.name}</div>
+                    <div className="course-sub-text">
+                      Keyingi mavzu: {activeCourse.lessons?.[0]?.title || "Darslar hali qo'shilmagan"}
                     </div>
-                    <div className="course-stat-divider" />
-                    <div className="course-stat">
-                      <span className="course-stat-val">{currentCourse.lessonsLeft}</span>
-                      <span className="course-stat-label">dars</span>
+                    <div className="course-progress-bar-wrap">
+                      <ProgressBar value={activeCourse.progress} color="#1e9bff" showPercent={false} />
                     </div>
                   </div>
-                  <Link to="/courses" className="course-davom-link">
-                    Davom etish &gt;
-                  </Link>
+
+                  <div className="course-right-actions">
+                    <div className="course-stats-horizontal">
+                      <div className="course-stat">
+                        <span className="course-stat-val">{activeCourse.enrollment?.completedLessons?.length || 0}</span>
+                        <span className="course-stat-label">bajarildi</span>
+                      </div>
+                      <div className="course-stat-divider" />
+                      <div className="course-stat">
+                        <span className="course-stat-val">{activeCourse.lessons?.length || 0}</span>
+                        <span className="course-stat-label">dars</span>
+                      </div>
+                    </div>
+                    <Link to="/courses" className="course-davom-link">
+                      Davom etish &gt;
+                    </Link>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="home-empty-state">
+                  <div className="home-empty-icon">📚</div>
+                  <div className="home-empty-title">Hali kurs yo'q</div>
+                  <div className="home-empty-text">
+                    Guruhga kurs biriktirilganda kurslar shu yerda paydo bo'ladi.
+                  </div>
+                  <Link to="/courses" className="course-davom-link">Kurslarim &gt;</Link>
+                </div>
+              )}
             </CardBody>
           </Card>
         </div>
 
         {/* ===== RIGHT (NARROW) COLUMN ===== */}
-        {/* Only Topshiriqlar (tasks) card with its Barchasi > link */}
         <div className="home-right">
           <Card className="tasks-card">
             <CardHeader>
               <div className="tasks-header-left">
                 <span className="card-title">Topshiriqlar</span>
-                <Badge variant="warning">{currentTasks.filter(t => t.status !== 'done').length} ta faol</Badge>
+                <Badge variant="warning">0 ta faol</Badge>
               </div>
               <Link to="/works" className="tasks-all-link">
                 Barchasi &gt;
               </Link>
             </CardHeader>
             <CardBody>
-              <div className="tasks-list tasks-scrollable">
-                {currentTasks.map(task => (
-                  <div key={task.id} className="task-item">
-                    <div className={['task-status-dot', task.status].join(' ')} />
-                    <div className="task-info">
-                      <div className="task-title">{task.title}</div>
-                      <div className="task-deadline">📅 gacha {task.deadline}</div>
-                    </div>
-                    <span className="task-coins">+{task.coins} 🪙</span>
-                    <Badge
-                      variant={task.status === 'done' ? 'success' : task.status === 'in-progress' ? 'accent' : 'warning'}
-                    >
-                      {STATUS_LABEL[task.status]}
-                    </Badge>
-                    {task.status !== 'done' && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => completeTask(task)}
-                      >
-                        ✓
-                      </Button>
-                    )}
-                  </div>
-                ))}
+              <div className="home-empty-state">
+                <div className="home-empty-icon">📝</div>
+                <div className="home-empty-title">Hali topshiriq yo'q</div>
+                <div className="home-empty-text">
+                  Topshiriqlar paydo bo'lganda shu yerda ko'rinadi.
+                </div>
+                <Link to="/works" className="course-davom-link">Ish qo'shish &gt;</Link>
               </div>
             </CardBody>
           </Card>
@@ -206,4 +194,3 @@ export default function HomePage() {
     </div>
   );
 }
-

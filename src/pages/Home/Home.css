@@ -441,3 +441,34 @@
   }
 }
 
+/* ---- Empty states ---- */
+.home-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 26px 18px;
+  gap: 6px;
+}
+
+.home-empty-icon {
+  font-size: 2rem;
+  margin-bottom: 2px;
+}
+
+.home-empty-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+.home-empty-text {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  max-width: 320px;
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+

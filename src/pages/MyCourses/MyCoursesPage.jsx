@@ -1,72 +1,71 @@
-// My Courses — Мои курсы
+// My Courses — Kurslarim
 import { Card, CardBody, CardHeader, Button, ProgressBar, Badge } from '../../components/ui';
-import { freeCourses, currentCourse } from '../../data/courses';
+import { useAuth } from '../../context/AuthContext';
+import { getCourse, getStudentEnrollments } from '../../services/courses';
 import './MyCourses.css';
 
 const COURSE_EMOJIS = { Frontend: '⚛️', Backend: '🔧', DevOps: '🛠️' };
 
 export default function MyCoursesPage() {
+  const { user } = useAuth();
+
+  const enrollments = user ? getStudentEnrollments(user.id) : [];
+  const myCourses = enrollments
+    .map(enrollment => {
+      const course = getCourse(enrollment.courseId);
+      return course ? { ...course, progress: enrollment.progress || 0, enrollment } : null;
+    })
+    .filter(Boolean);
+
   return (
     <div>
-      <h1 className="page-title">📚 Мои курсы</h1>
+      <h1 className="page-title">📚 Kurslarim</h1>
 
-      {/* Continue current course */}
-      <h2 className="section-title">▶ Продолжить</h2>
-      <Card style={{ marginBottom: 28 }}>
-        <CardBody>
-          <div className="courses-current-card">
-            <div
-              className="courses-current-cover"
-              style={{ background: `${currentCourse.coverColor}20` }}
-            >
-              {COURSE_EMOJIS[currentCourse.category] || '📚'}
+      {myCourses.length === 0 ? (
+        <Card>
+          <CardBody>
+            <div className="courses-empty-state">
+              <div className="courses-empty-icon">🪐</div>
+              <h3 className="courses-empty-title">Hali kurs yo'q</h3>
+              <p className="courses-empty-text">
+                Guruhga kurs biriktirilganda u shu yerda 0% progress bilan paydo bo'ladi.
+              </p>
             </div>
-            <div className="courses-current-info">
-              <div className="courses-current-title">{currentCourse.title}</div>
-              <div className="courses-current-meta">
-                📖 {currentCourse.lessonsTotal} уроков · {currentCourse.level} · {currentCourse.category}
-              </div>
-              <ProgressBar
-                value={currentCourse.progress}
-                label={`${currentCourse.lessonsDone} из ${currentCourse.lessonsTotal} уроков`}
-              />
-              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: 6 }}>
-                Следующий урок: <strong>{currentCourse.nextLesson}</strong>
-              </div>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-end' }}>
-              <Badge variant="accent">70%</Badge>
-              <Button variant="accent">▶ Продолжить</Button>
-            </div>
+          </CardBody>
+        </Card>
+      ) : (
+        <>
+          <h2 className="section-title">▶ Sizning kurslaringiz</h2>
+          <div className="free-courses-grid">
+            {myCourses.map(course => (
+              <Card key={course.id} className="course-card" hover>
+                <CardHeader>
+                  <span className="card-title">{course.name}</span>
+                  <Badge variant="accent">{course.category}</Badge>
+                </CardHeader>
+                <CardBody>
+                  <div className="course-cover" style={{ background: 'var(--accent-light)' }}>
+                    {COURSE_EMOJIS[course.category] || '📚'}
+                  </div>
+                  <div className="course-meta" style={{ marginTop: 12 }}>
+                    📖 {course.lessons?.length || 0} dars · {course.level}
+                  </div>
+                  <ProgressBar
+                    value={course.progress}
+                    label={`${course.enrollment?.completedLessons?.length || 0} / ${course.lessons?.length || 0} dars`}
+                    color="#1e9bff"
+                  />
+                  <div style={{ marginTop: 12 }}>
+                    <Button variant="outline" size="sm" block>
+                      ▶ Davom etish
+                    </Button>
+                  </div>
+                </CardBody>
+              </Card>
+            ))}
           </div>
-        </CardBody>
-      </Card>
-
-      {/* Free courses */}
-      <h2 className="section-title">🆓 Бесплатные курсы</h2>
-      <div className="free-courses-grid">
-        {freeCourses.map(course => (
-          <Card key={course.id} className="course-card" hover>
-            <div
-              className="course-cover"
-              style={{ background: `${course.coverColor}20` }}
-            >
-              {COURSE_EMOJIS[course.category] || '📚'}
-              <div className="course-category-badge">
-                <Badge variant="accent">{course.category}</Badge>
-              </div>
-            </div>
-            <div className="course-info">
-              <div className="course-title">{course.title}</div>
-              <div className="course-meta">📖 {course.lessonsCount} уроков · {course.level}</div>
-              <Button variant="outline" size="sm" block>
-                🚀 Начать
-              </Button>
-            </div>
-          </Card>
-        ))}
-      </div>
+        </>
+      )}
     </div>
   );
 }
-

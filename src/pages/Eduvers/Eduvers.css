@@ -1,10 +1,16 @@
-/* Eduvers Standalone Section Styles */
+/* Eduvers content — common AppLayout ichida */
 .eduvers-page {
-  min-height: 100vh;
-  background-color: var(--bg-primary);
+  min-height: auto;
+  background-color: transparent;
   color: var(--text-primary);
   display: flex;
   flex-direction: column;
+}
+
+.eduvers-lang-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
 }
 
 /* Standalone Header */

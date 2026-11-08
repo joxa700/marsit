@@ -1,6 +1,14 @@
 // Note: mockapi is only for this learning project, and passwords are stored in plain text.
+import { isAdminAccount, isBlockedAccount, normalizeEmail, resolveRole } from '../config/auth';
 
 const BASE_URL = 'https://6ae9ba4d3d3dd3d37be58d3a.mockapi.io/quiz';
+
+function networkError(err) {
+  if (err.name === 'TypeError' || String(err.message).includes('fetch')) {
+    return new Error("Server bilan bog'lanishda xatolik yuz berdi. Internet aloqasini tekshiring.");
+  }
+  return err;
+}
 
 /**
  * Fetch all registered accounts from mockapi.io
@@ -10,9 +18,7 @@ export async function fetchAccounts() {
   try {
     const response = await fetch(BASE_URL, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-      },
+      headers: { Accept: 'application/json' },
     });
 
     if (!response.ok) {
@@ -22,16 +28,13 @@ export async function fetchAccounts() {
     const data = await response.json();
     return Array.isArray(data) ? data : [];
   } catch (err) {
-    if (err.name === 'TypeError' || err.message.includes('fetch')) {
-      throw new Error("Server bilan bog'lanishda xatolik yuz berdi. Internet aloqasini tekshiring.");
-    }
-    throw err;
+    throw networkError(err);
   }
 }
 
 /**
  * Create a new account in mockapi.io
- * @param {Object} accountData - { email, password, name, createdAt }
+ * @param {Object} accountData
  * @returns {Promise<Object>} Created account object
  */
 export async function createAccount(accountData) {
@@ -40,7 +43,7 @@ export async function createAccount(accountData) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
+        Accept: 'application/json',
       },
       body: JSON.stringify(accountData),
     });
@@ -51,73 +54,96 @@ export async function createAccount(accountData) {
 
     return await response.json();
   } catch (err) {
-    if (err.name === 'TypeError' || err.message.includes('fetch')) {
-      throw new Error("Server bilan bog'lanishda xatolik yuz berdi. Internet aloqasini tekshiring.");
-    }
-    throw err;
+    throw networkError(err);
   }
 }
 
 /**
- * Register a new user:
- * 1. Checks if email already exists (trim + case insensitive)
- * 2. If already exists, throws "Bu email allaqachon ro'yxatdan o'tgan"
- * 3. Otherwise POSTs the new user to mockapi.io and returns safe user data (without password)
- *
- * @param {Object} params - { email, password, name }
- * @returns {Promise<Object>} Safe user data without password
+ * Update an existing account (merges current fields and sends PUT).
  */
-export async function registerUser({ email, password, name = '' }) {
-  const normalizedEmail = email.trim().toLowerCase();
+export async function updateAccount(id, updates) {
+  try {
+    const accounts = await fetchAccounts();
+    const current = accounts.find(acc => String(acc.id) === String(id));
+    if (!current) throw new Error('Akkaunt topilmadi');
 
-  // 1. Fetch existing accounts to check uniqueness
+    const merged = { ...current, ...updates };
+    const response = await fetch(`${BASE_URL}/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify(merged),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Akkauntni yangilashda xatolik: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (err) {
+    throw networkError(err);
+  }
+}
+
+export async function deleteAccount(id) {
+  try {
+    const response = await fetch(`${BASE_URL}/${id}`, {
+      method: 'DELETE',
+      headers: { Accept: 'application/json' },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Akkauntni o'chirishda xatolik: ${response.status}`);
+    }
+
+    return true;
+  } catch (err) {
+    throw networkError(err);
+  }
+}
+
+/**
+ * Admin tomonidan student yaratish. Har doim role: "student" bo'ladi.
+ * Admin yaratish uchun hech qanday yo'l yo'q.
+ */
+export async function createStudentAccount({ email, password, name = '', group = null }) {
+  const normalizedEmail = normalizeEmail(email);
+
   const accounts = await fetchAccounts();
-  const exists = accounts.some(
-    acc => acc.email && acc.email.trim().toLowerCase() === normalizedEmail
-  );
-
+  const exists = accounts.some(acc => normalizeEmail(acc.email) === normalizedEmail);
   if (exists) {
     throw new Error("Bu email allaqachon ro'yxatdan o'tgan");
   }
 
-  // 2. Prepare new user payload matching expected fields
-  const displayName = name.trim() || normalizedEmail.split('@')[0];
-  const newAccount = {
+  const displayName = String(name || '').trim() || normalizedEmail.split('@')[0];
+  const created = await createAccount({
     email: normalizedEmail,
-    password: password,
+    password,
     name: displayName,
-    group: 'React-Pro Guruhi',
+    role: 'student',
+    status: 'active',
+    groupId: group?.id || '',
+    groupName: group?.name || '',
+    group: group?.name || '',
     createdAt: new Date().toISOString(),
-  };
+  });
 
-  // 3. POST to mockapi.io
-  const created = await createAccount(newAccount);
-
-  // 4. Return safe user data without password
-  const { password: _, ...safeUser } = created;
-  return safeUser;
+  return sanitizeAccount(created);
 }
 
 /**
- * Login a user:
- * 1. Fetches all accounts from mockapi.io
- * 2. Compares email (case-insensitive, trimmed) and password
- * 3. Returns safe user data if matched, or throws "Email yoki parol noto'g'ri"
- *
- * @param {Object} params - { email, password }
- * @returns {Promise<Object>} Safe user data without password
+ * Login a user and return safe user data with a resolved role.
+ * Blocked accounts cannot log in.
  */
 export async function loginUser({ email, password }) {
-  const normalizedEmail = email.trim().toLowerCase();
-
-  // 1. Fetch accounts from mockapi.io
+  const normalizedEmail = normalizeEmail(email);
   const accounts = await fetchAccounts();
 
-  // 2. Match credentials
   const account = accounts.find(
     acc =>
-      acc.email &&
-      acc.email.trim().toLowerCase() === normalizedEmail &&
+      normalizeEmail(acc.email) === normalizedEmail &&
       acc.password === password
   );
 
@@ -125,7 +151,20 @@ export async function loginUser({ email, password }) {
     throw new Error("Email yoki parol noto'g'ri");
   }
 
-  // 3. Return safe user data without password
-  const { password: _, ...safeUser } = account;
-  return safeUser;
+  if (isBlockedAccount(account)) {
+    throw new Error('Akkaunt bloklangan');
+  }
+
+  return sanitizeAccount(account);
 }
+
+export function sanitizeAccount(account) {
+  if (!account) return null;
+  const safe = { ...account };
+  delete safe.password;
+  safe.role = resolveRole(account);
+  safe.status = account.status || 'active';
+  return safe;
+}
+
+export { isAdminAccount, isBlockedAccount };

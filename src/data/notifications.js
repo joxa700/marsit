@@ -1,10 +1,8 @@
 // Mock notifications data (Uzbek)
 export const initialNotifications = [
-  { id: 1, text: "Vazifangiz tekshirildi! +50 tanga", time: "5 daqiqa oldin", read: false, type: 'success' },
-  { id: 2, text: "Yangi raqib sizni Battle ga chorlamoqda!", time: "15 daqiqa oldin", read: false, type: 'battle' },
-  { id: 3, text: "Xakaton 2 kundan so'ng boshlanadi", time: "1 soat oldin", read: false, type: 'info' },
-  { id: 4, text: "Tabriklaymiz! 93-darsni muvaffaqiyatli yakunladingiz", time: "2 soat oldin", read: true, type: 'success' },
-  { id: 5, text: "7 kunlik seriya! Bonusni qabul qiling", time: "Kecha", read: true, type: 'streak' },
+  { id: 1, text: "Platformaga xush kelibsiz! Mars IT bilan o'qishni boshlang", time: "Hozir", read: false, type: 'info' },
+  { id: 2, text: "Guruhga biriktirilgan kurslar 'Kurslarim' bo'limida ko'rinadi", time: "Hozir", read: false, type: 'info' },
+  { id: 3, text: "Xakaton haqida ma'lumot 'Xakaton' bo'limida", time: "Hozir", read: true, type: 'info' },
 ];
 
 // Mock AI canned responses (Uzbek)

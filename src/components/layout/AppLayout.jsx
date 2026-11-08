@@ -16,6 +16,10 @@ import {
   Bell,
   Menu,
   X,
+  LayoutDashboard,
+  Users,
+  Layers,
+  ClipboardList,
 } from 'lucide-react';
 import './layout.css';
 import { Avatar } from '../ui';
@@ -25,7 +29,7 @@ import { useUserStats } from '../../context/UserStatsContext';
 import { initialNotifications } from '../../data/notifications';
 
 // Sidebar menu items: Uzbek labels, same routes, gray outlined icons
-const NAV_ITEMS = [
+export const STUDENT_NAV_ITEMS = [
   { path: '/',          label: 'Asosiy',          shortLabel: 'Asosiy',    icon: Home },
   { path: '/courses',   label: 'Kurslarim',       shortLabel: 'Kurslarim', icon: BookOpen },
   { path: '/works',     label: 'Mening ishlarim', shortLabel: 'Ishlarim',  icon: Briefcase },
@@ -34,8 +38,21 @@ const NAV_ITEMS = [
   { path: '/eduvers',   label: 'Eduverse',        shortLabel: 'Eduverse',  icon: Globe },
 ];
 
-export default function AppLayout({ children }) {
-  const { user, logout } = useAuth();
+export const ADMIN_NAV_ITEMS = [
+  { path: '/admin',          label: 'Dashboard',  shortLabel: 'Asosiy',    icon: LayoutDashboard, end: true },
+  { path: '/admin/students', label: "O'quvchilar", shortLabel: "O'quvchi", icon: Users },
+  { path: '/admin/groups',   label: 'Guruhlar',   shortLabel: 'Guruhlar',  icon: Layers },
+  { path: '/admin/works',    label: 'Ishlar',     shortLabel: 'Ishlar',    icon: ClipboardList },
+  { path: '/admin/courses',  label: 'Kurslar',    shortLabel: 'Kurslar',   icon: BookOpen },
+];
+
+export default function AppLayout({
+  children,
+  navItems = STUDENT_NAV_ITEMS,
+  homePath = '/',
+  adminMode = false,
+}) {
+  const { user, logout, isAdmin } = useAuth();
   const { theme, setTheme, cycleTheme, currentTheme } = useTheme();
   const { stats, animating } = useUserStats();
   const navigate = useNavigate();
@@ -93,7 +110,7 @@ export default function AppLayout({ children }) {
           </button>
 
           {/* Logo wrapped in Link to home page */}
-          <Link to="/" className="topbar-logo-link" title="Mars IT">
+          <Link to={homePath} className="topbar-logo-link" title="Mars IT">
             <img src="/mars-logo.png" alt="Mars" className="topbar-logo-img" />
           </Link>
         </div>
@@ -227,17 +244,27 @@ export default function AppLayout({ children }) {
                 <div style={{ padding: '14px 18px', borderBottom: '1px solid var(--border)' }}>
                   <div style={{ fontWeight: 700, fontSize: '0.95rem' }}>{user?.name || 'Mars Foydalanuvchisi'}</div>
                   <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{user?.email || 'user@marsit.uz'}</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--accent)', marginTop: 4, fontWeight: 600 }}>{user?.group || 'React-Pro Guruhi'}</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--accent)', marginTop: 4, fontWeight: 600 }}>
+                    {adminMode || isAdmin ? 'Administrator' : (user?.group || 'Guruh biriktirilmagan')}
+                  </div>
                 </div>
-                <button className="dropdown-item" onClick={() => { navigate('/profile'); setProfileOpen(false); }}>
-                  👤 Mening profilim
-                </button>
+                {adminMode || isAdmin ? (
+                  <button className="dropdown-item" onClick={() => { navigate('/admin'); setProfileOpen(false); }}>
+                    🛠 Admin panel
+                  </button>
+                ) : (
+                  <button className="dropdown-item" onClick={() => { navigate('/profile'); setProfileOpen(false); }}>
+                    👤 Mening profilim
+                  </button>
+                )}
                 <button className="dropdown-item" onClick={() => { cycleTheme(); }}>
                   🎨 Mavzuni o'zgartirish ({currentTheme.label})
                 </button>
-                <button className="dropdown-item" onClick={() => alert('Mars IT hisob sozlamalari')}>
-                  ⚙️ Sozlamalar
-                </button>
+                {!(adminMode || isAdmin) && (
+                  <button className="dropdown-item" onClick={() => alert('Mars IT hisob sozlamalari')}>
+                    ⚙️ Sozlamalar
+                  </button>
+                )}
                 <div className="dropdown-divider" />
                 <button className="dropdown-item danger" onClick={handleLogout}>
                   🚪 Chiqish
@@ -253,7 +280,7 @@ export default function AppLayout({ children }) {
       <aside className={['sidebar', sidebarOpen ? 'open' : ''].join(' ')} aria-label="Asosiy navigatsiya">
         {/* Mobile slide-in drawer header */}
         <div className="sidebar-mobile-header">
-          <Link to="/" onClick={() => setSidebarOpen(false)}>
+          <Link to={homePath} onClick={() => setSidebarOpen(false)}>
             <img src="/mars-logo.png" alt="Mars" style={{ height: '36px', width: 'auto' }} />
           </Link>
           <button
@@ -268,13 +295,13 @@ export default function AppLayout({ children }) {
 
         {/* Sidebar Nav Links */}
         <nav className="sidebar-nav">
-          {NAV_ITEMS.map(item => {
+          {navItems.map(item => {
             const Icon = item.icon;
             return (
               <NavLink
                 key={item.path}
                 to={item.path}
-                end={item.path === '/'}
+                end={item.end ?? item.path === '/'}
                 className={({ isActive }) => ['sidebar-link', isActive ? 'active' : ''].join(' ')}
                 onClick={() => setSidebarOpen(false)}
               >
@@ -304,13 +331,13 @@ export default function AppLayout({ children }) {
 
       {/* ===== BOTTOM NAV (mobile) ===== */}
       <nav className="bottom-nav" aria-label="Mobil navigatsiya">
-        {NAV_ITEMS.map(item => {
+        {navItems.map(item => {
           const Icon = item.icon;
           return (
             <NavLink
               key={item.path}
               to={item.path}
-              end={item.path === '/'}
+              end={item.end ?? item.path === '/'}
               className={({ isActive }) => ['bottom-nav-item', isActive ? 'active' : ''].join(' ')}
             >
               <Icon size={20} className="bottom-nav-icon" />

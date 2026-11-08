@@ -73,3 +73,79 @@
   border-radius: var(--border-radius-sm);
 }
 
+/* ===== My Works (student CRUD) ===== */
+.works-page-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.works-form-card {
+  margin-bottom: 20px;
+}
+
+.works-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.works-form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.works-form-error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: var(--danger);
+  border-radius: var(--border-radius-sm);
+  padding: 8px 12px;
+  font-size: 0.82rem;
+}
+
+.works-form-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.works-empty-state {
+  text-align: center;
+  padding: 36px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.works-empty-icon {
+  font-size: 2.6rem;
+}
+
+.works-empty-state p {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  max-width: 420px;
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.work-comment {
+  margin-top: 6px;
+  font-size: 0.78rem;
+  color: var(--danger);
+  background: rgba(239, 68, 68, 0.08);
+  border-radius: var(--border-radius-sm);
+  padding: 6px 10px;
+}
+
+.works-item-actions {
+  display: flex;
+  gap: 4px;
+}
+
+

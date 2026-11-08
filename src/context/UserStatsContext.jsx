@@ -1,29 +1,56 @@
-// UserStatsContext — balance, coins, lightning, streak with persistence and animations
-import { createContext, useContext, useState, useCallback, useRef } from 'react';
+// UserStatsContext — per-user balance, coins, lightning, streak, wins
+import { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react';
+import { useAuth } from './AuthContext';
 
 const UserStatsContext = createContext(null);
 
 const DEFAULT_STATS = {
-  balance: 12500,
-  coins: 340,
-  lightning: 87,
-  streak: 7,
+  balance: 0,
+  coins: 0,
+  lightning: 0,
+  streak: 0,
+  wins: 0,
+  level: 1,
+  xp: 0,
 };
 
+function storageKeyFor(user) {
+  const id = user?.id || user?.email || 'guest';
+  return `marsit_stats_${id}`;
+}
+
+function loadStats(key) {
+  try {
+    const stored = localStorage.getItem(key);
+    return stored ? { ...DEFAULT_STATS, ...JSON.parse(stored) } : { ...DEFAULT_STATS };
+  } catch {
+    return { ...DEFAULT_STATS };
+  }
+}
+
 export function UserStatsProvider({ children }) {
-  const [stats, setStats] = useState(() => {
-    try {
-      const stored = localStorage.getItem('marsit_stats');
-      return stored ? { ...DEFAULT_STATS, ...JSON.parse(stored) } : DEFAULT_STATS;
-    } catch { return DEFAULT_STATS; }
-  });
+  const { user } = useAuth();
+  const storageKey = storageKeyFor(user);
+  const keyRef = useRef(storageKey);
+
+  const [stats, setStats] = useState(() => loadStats(storageKey));
+
+  // Har bir foydalanuvchi uchun alohida saqlangan statistika
+  useEffect(() => {
+    keyRef.current = storageKey;
+    setStats(loadStats(storageKey));
+  }, [storageKey]);
 
   // Tracks which stat is currently animating (for coin-pop effect)
   const [animating, setAnimating] = useState({});
   const animTimers = useRef({});
 
   function persist(newStats) {
-    localStorage.setItem('marsit_stats', JSON.stringify(newStats));
+    try {
+      localStorage.setItem(keyRef.current, JSON.stringify(newStats));
+    } catch {
+      // localStorage mavjud bo'lmasa jim o'tamiz
+    }
   }
 
   /**
@@ -73,6 +100,14 @@ export function UserStatsProvider({ children }) {
     triggerAnim('streak');
   }, []);
 
+  const addWins = useCallback((amount = 1) => {
+    setStats(prev => {
+      const next = { ...prev, wins: prev.wins + amount };
+      persist(next);
+      return next;
+    });
+  }, []);
+
   return (
     <UserStatsContext.Provider value={{
       stats,
@@ -81,6 +116,7 @@ export function UserStatsProvider({ children }) {
       addLightning,
       addBalance,
       incrementStreak,
+      addWins,
     }}>
       {children}
     </UserStatsContext.Provider>
@@ -92,4 +128,3 @@ export function useUserStats() {
   if (!ctx) throw new Error('useUserStats must be used within UserStatsProvider');
   return ctx;
 }
-
