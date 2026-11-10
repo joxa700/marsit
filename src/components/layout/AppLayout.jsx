@@ -8,6 +8,7 @@ import {
   Swords,
   Rocket,
   Globe,
+  Newspaper,
   Wallet,
   Flame,
   Coins,
@@ -36,6 +37,7 @@ export const STUDENT_NAV_ITEMS = [
   { path: '/battle',    label: 'Battle',          shortLabel: 'Battle',    icon: Swords },
   { path: '/hackathon', label: 'Xakaton',         shortLabel: 'Xakaton',   icon: Rocket },
   { path: '/eduvers',   label: 'Eduverse',        shortLabel: 'Eduverse',  icon: Globe },
+  { path: '/blog',      label: 'Blog',            shortLabel: 'Blog',      icon: Newspaper },
 ];
 
 export const ADMIN_NAV_ITEMS = [
@@ -44,6 +46,7 @@ export const ADMIN_NAV_ITEMS = [
   { path: '/admin/groups',   label: 'Guruhlar',   shortLabel: 'Guruhlar',  icon: Layers },
   { path: '/admin/works',    label: 'Ishlar',     shortLabel: 'Ishlar',    icon: ClipboardList },
   { path: '/admin/courses',  label: 'Kurslar',    shortLabel: 'Kurslar',   icon: BookOpen },
+  { path: '/admin/blog',     label: 'Blog',       shortLabel: 'Blog',      icon: Newspaper },
 ];
 
 export default function AppLayout({

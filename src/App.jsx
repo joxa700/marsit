@@ -13,6 +13,7 @@ import MyWorksPage from './pages/MyWorks/MyWorksPage';
 import BattlePage from './pages/Battle/BattlePage';
 import HackathonPage from './pages/Hackathon/HackathonPage';
 import EduversPage from './pages/Eduvers/EduversPage';
+import BlogPage from './pages/Blog/BlogPage';
 import ProfilePage from './pages/Profile/ProfilePage';
 
 // Admin pages
@@ -23,6 +24,7 @@ import AdminGroups from './pages/admin/AdminGroups';
 import AdminGroupDetail from './pages/admin/AdminGroupDetail';
 import AdminWorks from './pages/admin/AdminWorks';
 import AdminCourses from './pages/admin/AdminCourses';
+import AdminBlog from './pages/admin/AdminBlog';
 import './pages/admin/admin.css';
 
 function StudentShell({ children }) {
@@ -67,6 +69,7 @@ export default function App() {
         <Route path="/battle" element={<StudentShell><BattlePage /></StudentShell>} />
         <Route path="/hackathon" element={<StudentShell><HackathonPage /></StudentShell>} />
         <Route path="/eduvers" element={<StudentShell><EduversPage /></StudentShell>} />
+        <Route path="/blog" element={<StudentShell><BlogPage /></StudentShell>} />
         <Route path="/profile" element={<StudentShell><ProfilePage /></StudentShell>} />
 
         {/* Admin panel */}
@@ -77,6 +80,7 @@ export default function App() {
         <Route path="/admin/groups/:groupId" element={<AdminShell><AdminGroupDetail /></AdminShell>} />
         <Route path="/admin/works" element={<AdminShell><AdminWorks /></AdminShell>} />
         <Route path="/admin/courses" element={<AdminShell><AdminCourses /></AdminShell>} />
+        <Route path="/admin/blog" element={<AdminShell><AdminBlog /></AdminShell>} />
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to={user ? homeForUser : '/login'} replace />} />

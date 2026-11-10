@@ -469,6 +469,30 @@
   margin-right: 8px;
 }
 
+/* ---- Blog ---- */
+.admin-blog-author {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-blog-text {
+  max-width: 360px;
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.admin-blog-thumb {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: var(--border-radius-sm);
+  border: var(--border-width) solid var(--border);
+  display: block;
+}
+
 /* ---- Misc ---- */
 .admin-chip-row {
   display: flex;
